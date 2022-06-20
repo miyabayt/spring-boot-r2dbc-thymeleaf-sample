@@ -1,0 +1,36 @@
+server:
+  error.whitelabel.enabled: false
+  forward-headers-strategy: framework
+  port: 8080
+  compression:
+    enabled: true
+spring:
+  profiles:
+    default: local
+  messages:
+    basename: messages,ValidationMessages,PropertyNames
+    encoding: UTF-8
+  thymeleaf:
+    encoding: UTF-8
+  resources:
+    # 静的コンテンツをキャッシュする
+    cache:
+      period: 604800
+    chain:
+      # GZipされているリソースがあれば使う
+      compressed: true
+      strategy:
+        content:
+          # コンテンツのMD5ハッシュ値によるバージョニング
+          enabled: true
+          paths: /**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics,refresh
+  health:
+    db:
+      enabled: false
+    mail:
+      enabled: false

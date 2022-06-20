@@ -1,0 +1,60 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout}">
+    <head>
+        <title>ログイン</title>
+    </head>
+    <body class="login-page">
+        <div layout:fragment="content">
+            <div class="login-box">
+                <div class="login-logo">
+                    ログイン
+                </div>
+                <div class="login-box-body">
+                    <form id="loginForm" class="form-horizontal" th:action="@{'/login'}" method="post">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="username" autofocus="" placeholder="メールアドレス" />
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" placeholder="パスワード" />
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 no-padding">
+                                    <button type="submit" class="btn bg-purple btn-block btn-flat">ログイン</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <a href="#" th:href="@{/resetPassword}">パスワードを忘れた場合</a>
+                </div>
+            </div>
+        </div>
+        <div layout:fragment="scripts">
+            <script type="text/javascript" th:inline="javascript">
+                $(document).ready(function(){
+                    $("input").iCheck({
+                        checkboxClass: "icheckbox_square-purple",
+                        radioClass: "iradio_square-purple",
+                        increaseArea: "20%"
+                    });
+                });
+            </script>
+        </div>
+        <div layout:fragment="scripts">
+            <script>
+                <!--/* 二度押しするとforbiddenにリダイレクトされるので防止 */-->
+                var submitted;
+                $(document).ready(function(){
+                    $('#loginForm').on('submit', function(){
+                        if(submitted){
+                            return false;
+                        }
+                        submitted = true;
+                    });
+                });
+            </script>
+        </div>
+    </body>
+</html>

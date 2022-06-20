@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/sidebarLayout}">
+    <head>
+        <title>コード管理</title>
+    </head>
+    <body>
+        <div layout:fragment="sidebar">
+            <div th:replace="~{layouts/sidebar :: sidebar ('system', 'code')}"></div>
+        </div>
+        <section layout:fragment="content-header">
+            <h1 th:with="text=${codeForm.isNew()} ? 'コードマスタ登録' : 'コードマスタ編集'" th:text="${text}">コードマスタ登録</h1>
+            <ol class="breadcrumb">
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/system/codes/find(page=1)}">コードマスタ検索</a></li>
+                <li th:with="text=${codeForm.isNew()} ? 'コードマスタ登録' : 'コードマスタ編集'" th:text="${text}">コードマスタ登録</li>
+            </ol>
+        </section>
+        <section layout:fragment="content">
+            <div class="box">
+                <form th:object="${codeForm}" th:action="${action}" id="form1"
+                      th:with="action=${codeForm.isNew()} ? @{/system/codes/new} : @{/system/codes/edit/{id}(id=*{id})}"
+                      class="form-horizontal" enctype="multipart/form-data" method="post">
+                    <div class="box-body">
+                        <input th:replace="~{fragments/inputField :: input ('text', 'コード値', 'codeValue')}" />
+                        <input th:replace="~{fragments/inputField :: input ('text', 'コードエイリアス', 'codeAlias')}" />
+                        <input th:replace="~{fragments/inputField :: input ('text', '表示順', 'displayOrder')}" />
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">無効フラグ</label>
+                            <div class="col-sm-10">
+                                <div class="checkbox" style="margin-left: 20px;">
+                                    <input type="checkbox" class="form-check-input"
+                                           th:field="*{isInvalid}"
+                                           th:value="${invalid}"
+                                           th:with="invalid=*{isInvalid eq true}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button class="btn btn-default bg-purple" type="submit"
+                                th:with="text=${codeForm.isNew()} ? '登録' : '保存'" th:text="${text}">
+                            Add Code
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </body>
+    <div layout:fragment="scripts">
+        <script th:replace="~{fragments/validationScript :: script}" />
+        <script type="text/javascript" src="../public/static/js/system/codes.js"
+                th:src="@{/static/js/system/codes.js}"></script>
+    </div>
+</html>

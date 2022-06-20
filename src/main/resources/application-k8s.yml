@@ -1,0 +1,38 @@
+spring:
+  config:
+    activate:
+      on-profile: k8s
+  mail:
+    protocol: smtp
+    host: mailhog
+    port: 1025
+    username: test
+    password: test
+    properties:
+      mail:
+        from: test@example.com
+  r2dbc:
+    url: r2dbc:pool:mysql://mysql:3306/spring-boot-r2dbc-thymeleaf-sample?allowPublicKeyRetrieval=true&useSSL=false
+  flyway:
+    schemas: spring-boot-r2dbc-thymeleaf-sample
+    url: jdbc:mysql://mysql:3306/?allowPublicKeyRetrieval=true&useSSL=false
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    baseline-on-migrate: true
+    placeholder-replacement: false
+  redis:
+    host: redis
+    port: 6379
+logging:
+  level:
+    org.springframework.r2dbc: INFO
+
+####
+# アプリケーションの設定
+application:
+  siteUrl: http://spring-boot-r2dbc-thymeleaf-sample.192.168.64.3.nip.io
+  fileUploadLocation: /tmp/sample
+  cors:
+    allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,X-XSRF-TOKEN"
+    allowedMethods: "POST,GET,PUT,OPTIONS,DELETE"
+    allowedOrigins: "http://spring-boot-r2dbc-thymeleaf-sample.192.168.64.3.nip.io"

@@ -17,5 +17,5 @@ public class SearchUserForm extends BaseSearchForm {
 
   String lastName;
 
-  String password;
+  String email;
 }

@@ -42,4 +42,11 @@ public class Role extends BaseEntityImpl implements Persistable<UUID> {
     return rolePermissions.stream()
         .anyMatch(rp -> isEquals(rp.getPermissionCode(), permissionCode) && rp.getIsEnabled());
   }
+
+  public void setPermission(String permissionCode, boolean isEnabled) {
+    rolePermissions.stream()
+        .filter(rp -> isEquals(rp.getPermissionCode(), permissionCode))
+        .findFirst()
+        .ifPresent(rp -> rp.setIsEnabled(isEnabled));
+  }
 }

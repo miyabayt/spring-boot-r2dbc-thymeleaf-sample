@@ -12,6 +12,9 @@ spring:
     encoding: UTF-8
   thymeleaf:
     encoding: UTF-8
+  webflux:
+    # HiddenHttpMethodFilterを有効にする
+    hiddenmethod.filter.enabled: true
   resources:
     # 静的コンテンツをキャッシュする
     cache:

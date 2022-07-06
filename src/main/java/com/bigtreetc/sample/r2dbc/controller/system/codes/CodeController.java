@@ -79,7 +79,14 @@ public class CodeController extends AbstractHtmlController {
       model.addAttribute("codeForm", new CodeForm());
     }
 
-    return setBindingResultToAttribute(model, session).thenReturn("modules/system/codes/new");
+    return codeCategoryService
+        .findAll(new CodeCategory(), Pageable.unpaged())
+        .flatMap(
+            pages -> {
+              model.addAttribute("codeCategories", pages);
+              return setBindingResultToAttribute(model, session)
+                  .thenReturn("modules/system/codes/new");
+            });
   }
 
   /**
@@ -186,13 +193,15 @@ public class CodeController extends AbstractHtmlController {
       WebSession session) {
     return codeService
         .findById(codeId)
+        .zipWith(codeCategoryService.findAll(new CodeCategory(), Pageable.unpaged()))
         .flatMap(
-            code -> {
+            tuple2 -> {
               // セッションから取得できる場合は、読み込み直さない
               if (!hasErrors(session)) {
                 // 取得したDtoをFromに詰め替える
-                modelMapper.map(code, form);
+                modelMapper.map(tuple2.getT1(), form);
               }
+              model.addAttribute("codeCategories", tuple2.getT2());
               return setBindingResultToAttribute(model, session)
                   .thenReturn("modules/system/codes/new");
             });

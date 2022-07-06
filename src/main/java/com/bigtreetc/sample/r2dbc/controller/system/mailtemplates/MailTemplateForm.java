@@ -14,6 +14,9 @@ public class MailTemplateForm extends BaseForm {
 
   UUID id;
 
+  // カテゴリコード
+  String categoryCode;
+
   // メールテンプレートコード
   @NotEmpty String templateCode;
 

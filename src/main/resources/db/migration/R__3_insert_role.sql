@@ -30,6 +30,8 @@ INSERT INTO role_permissions (id, role_code, permission_code, is_enabled, create
 SELECT uuid(), 'operation_admin', permission_code, 0, 'init', NOW() FROM permissions;
 INSERT INTO role_permissions (id, role_code, permission_code, is_enabled, created_by, created_at)
 SELECT uuid(), 'operator', permission_code, 0, 'init', NOW() FROM permissions;
+INSERT INTO role_permissions (id, role_code, permission_code, is_enabled, created_by, created_at)
+SELECT uuid(), 'user', permission_code, 0, 'init', NOW() FROM permissions;
 
 DELETE FROM staff_roles WHERE created_by = 'init';
 INSERT INTO staff_roles (id, staff_id, role_code, created_by, created_at) VALUES

@@ -3,6 +3,7 @@ package com.bigtreetc.sample.r2dbc.domain.model.system;
 import com.bigtreetc.sample.r2dbc.base.domain.model.BaseEntityImpl;
 import java.time.LocalDate;
 import java.util.UUID;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -23,7 +24,7 @@ public class Holiday extends BaseEntityImpl implements Persistable<UUID> {
   String holidayName;
 
   // 日付
-  LocalDate holidayDate;
+  @NotNull LocalDate holidayDate;
 
   @Override
   public boolean isNew() {

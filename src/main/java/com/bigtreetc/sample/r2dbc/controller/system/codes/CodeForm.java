@@ -15,7 +15,13 @@ public class CodeForm extends BaseForm {
 
   UUID id;
 
+  // 分類コード
+  @NotEmpty String categoryCode;
+
   // コード名
+  @NotEmpty String codeName;
+
+  // コード値
   @NotEmpty String codeValue;
 
   // コードエイリアス

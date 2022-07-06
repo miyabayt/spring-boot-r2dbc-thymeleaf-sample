@@ -4,6 +4,7 @@ import com.bigtreetc.sample.r2dbc.base.web.controller.html.BaseForm;
 import java.time.LocalDate;
 import java.util.UUID;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,5 @@ public class HolidayForm extends BaseForm {
   @NotEmpty String holidayName;
 
   // 日付
-  LocalDate holidayDate;
+  @NotNull LocalDate holidayDate;
 }

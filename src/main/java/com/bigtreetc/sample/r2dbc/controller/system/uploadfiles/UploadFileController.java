@@ -8,6 +8,7 @@ import com.bigtreetc.sample.r2dbc.base.domain.helper.FileHelper;
 import com.bigtreetc.sample.r2dbc.base.util.FileUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import java.nio.file.Paths;
+import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import lombok.val;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -92,7 +94,7 @@ public class UploadFileController extends AbstractHtmlController implements Init
    * @return
    */
   @PreAuthorize("hasAuthority('uploadFile')")
-  @PostMapping("/upload")
+  @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public Mono<Rendering> uploadFile(@RequestPart("file") FilePart file, WebSession session) {
     return file.content()
         .doOnNext(
@@ -102,6 +104,47 @@ public class UploadFileController extends AbstractHtmlController implements Init
               FileUtils.saveFile(Paths.get(fileUploadLocation), filename, inputStream);
               session.getAttributes().put(GLOBAL_MESSAGE, getMessage("uploadFiles.upload.success"));
             })
+        .then(redirectTo("/system/uploadFiles/list"));
+  }
+
+  /**
+   * ファイルアップロード（Ajax）
+   *
+   * @param file
+   * @return
+   */
+  @PreAuthorize("hasAuthority('uploadFile')")
+  @PostMapping(
+      path = "/upload",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      headers = "x-requested-with=XMLHttpRequest")
+  public Mono<ResponseEntity<?>> uploadFile(@RequestPart("file") FilePart file) {
+    return file.content()
+        .doOnNext(
+            dataBuffer -> {
+              val filename = file.filename();
+              val inputStream = dataBuffer.asInputStream(true);
+              FileUtils.saveFile(Paths.get(fileUploadLocation), filename, inputStream);
+            })
+        .then(
+            Mono.fromCallable(
+                () -> {
+                  val body =
+                      Map.of("message", getMessage("uploadFiles.upload.success"), "success", true);
+                  return ResponseEntity.ok().body(body);
+                }));
+  }
+
+  /**
+   * ファイル削除
+   *
+   * @param filename
+   * @return
+   */
+  @PreAuthorize("hasAuthority('uploadFile')")
+  @DeleteMapping(path = "/delete/{filename:.+}")
+  public Mono<Rendering> deleteFile(@PathVariable String filename) {
+    return Mono.fromRunnable(() -> FileUtils.deleteFile(Paths.get(fileUploadLocation), filename))
         .then(redirectTo("/system/uploadFiles/list"));
   }
 

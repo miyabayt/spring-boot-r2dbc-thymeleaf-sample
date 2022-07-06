@@ -110,16 +110,14 @@ public class RoleController extends AbstractHtmlController {
 
     // 入力値からDTOを作成する
     val inputRole = modelMapper.map(form, Role.class);
-    form.getPermissions()
-        .forEach(
-            (permissionCode, isEnabled) -> {
-              val rp = new RolePermission();
-              rp.setId(UUID.randomUUID());
-              rp.setRoleCode(form.getRoleCode());
-              rp.setPermissionCode(permissionCode);
-              rp.setIsEnabled(isEnabled);
-              inputRole.getRolePermissions().add(rp);
-            });
+    for (val entry : form.getPermissions().entrySet()) {
+      val rp = new RolePermission();
+      rp.setId(UUID.randomUUID());
+      rp.setRoleCode(form.getRoleCode());
+      rp.setPermissionCode(entry.getKey());
+      rp.setIsEnabled(entry.getValue());
+      inputRole.getRolePermissions().add(rp);
+    }
 
     return roleService
         .create(inputRole)
@@ -215,13 +213,11 @@ public class RoleController extends AbstractHtmlController {
                 form.setId(role.getId());
                 form.setRoleCode(role.getRoleCode());
                 form.setRoleName(role.getRoleName());
-                role.getPermissions()
-                    .forEach(
-                        p -> {
-                          val permissionCode = p.getPermissionCode();
-                          val isEnabled = role.hasPermission(permissionCode);
-                          form.getPermissions().put(permissionCode, isEnabled);
-                        });
+                for (val p : role.getPermissions()) {
+                  val permissionCode = p.getPermissionCode();
+                  val isEnabled = role.hasPermission(permissionCode);
+                  form.getPermissions().put(permissionCode, isEnabled);
+                }
               }
               model.addAttribute("permissions", tuple2.getT2());
               return setBindingResultToAttribute(model, session)
@@ -259,13 +255,13 @@ public class RoleController extends AbstractHtmlController {
             role -> {
               role.setRoleCode(form.getRoleCode());
               role.setRoleName(form.getRoleName());
-              role.getRolePermissions()
-                  .forEach(
-                      rp -> {
-                        val permissionCode = rp.getPermissionCode();
-                        val isEnabled = form.getPermissions().get(permissionCode);
-                        rp.setIsEnabled(isEnabled);
-                      });
+
+              val permissions = form.getPermissions();
+              for (val entry : permissions.entrySet()) {
+                val permissionCode = entry.getKey();
+                val isEnabled = Boolean.TRUE.equals(entry.getValue());
+                role.setPermission(permissionCode, isEnabled);
+              }
               return role;
             })
         .flatMap(roleService::update)

@@ -60,4 +60,19 @@ public class FileUtils {
       throw new IllegalStateException("failed to save file. " + filename, e);
     }
   }
+
+  /**
+   * ファイルを削除します。
+   *
+   * @param location
+   * @param filename
+   */
+  public static void deleteFile(Path location, String filename) {
+    Objects.requireNonNull(filename, "filename can't be null");
+    try {
+      Files.deleteIfExists(location.resolve(filename));
+    } catch (IOException e) {
+      throw new IllegalStateException("failed to delete file. " + filename, e);
+    }
+  }
 }

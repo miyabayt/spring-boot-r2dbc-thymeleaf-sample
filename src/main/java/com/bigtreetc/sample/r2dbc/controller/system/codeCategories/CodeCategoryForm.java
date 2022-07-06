@@ -14,9 +14,9 @@ public class CodeCategoryForm extends BaseForm {
 
   UUID id;
 
-  // コード分類コード
+  // 分類コード
   @NotEmpty String categoryCode;
 
-  // コード分類名
+  // 分類名
   @NotEmpty String categoryName;
 }

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS code_categories(
-  id VARCHAR(36) NOT NULL COMMENT 'コード分類ID'
-  , category_code VARCHAR(50) NOT NULL COMMENT 'コード分類コード'
-  , category_name VARCHAR(50) NOT NULL COMMENT 'コード分類名'
+  id VARCHAR(36) NOT NULL COMMENT '分類ID'
+  , category_code VARCHAR(50) NOT NULL COMMENT '分類コード'
+  , category_name VARCHAR(50) NOT NULL COMMENT '分類名'
   , created_by VARCHAR(50) NOT NULL COMMENT '登録者'
   , created_at DATETIME NOT NULL COMMENT '登録日時'
   , updated_by VARCHAR(50) DEFAULT NULL COMMENT '更新者'
@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS code_categories(
   , version INT(11) unsigned NOT NULL DEFAULT 1 COMMENT '改訂番号'
   , PRIMARY KEY (id)
   , KEY idx_code_categories_01 (category_code)
-) COMMENT='コード分類';
+) COMMENT='分類';
 
 CREATE TABLE IF NOT EXISTS codes(
   id VARCHAR(36) NOT NULL COMMENT 'コードID'
-  , category_code VARCHAR(50) NOT NULL COMMENT 'コード分類コード'
+  , category_code VARCHAR(50) NOT NULL COMMENT '分類コード'
   , code_value VARCHAR(50) NOT NULL COMMENT 'コード値'
   , code_name VARCHAR(100) NOT NULL COMMENT 'コード名'
   , code_alias VARCHAR(100) DEFAULT NULL COMMENT 'コードエイリアス'
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS send_mail_queue(
 
 CREATE TABLE IF NOT EXISTS holidays(
   id VARCHAR(36) NOT NULL COMMENT '祝日ID'
-  , holiday_name VARCHAR(100) NOT NULL COMMENT '祝日名'
+  , holiday_name VARCHAR(100) NOT NULL COMMENT '名称'
   , holiday_date DATE NOT NULL COMMENT '日付'
   , created_by VARCHAR(50) NOT NULL COMMENT '登録者'
   , created_at DATETIME NOT NULL COMMENT '登録日時'

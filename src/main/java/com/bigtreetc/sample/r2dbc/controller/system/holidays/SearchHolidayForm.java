@@ -14,7 +14,7 @@ public class SearchHolidayForm extends BaseSearchForm {
 
   UUID id;
 
-  // 祝日名
+  // 名称
   String holidayName;
 
   // 日付

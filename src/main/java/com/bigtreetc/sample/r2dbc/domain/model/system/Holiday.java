@@ -19,7 +19,7 @@ public class Holiday extends BaseEntityImpl implements Persistable<UUID> {
   // 祝日ID
   @Id UUID id;
 
-  // 祝日名
+  // 名称
   String holidayName;
 
   // 日付

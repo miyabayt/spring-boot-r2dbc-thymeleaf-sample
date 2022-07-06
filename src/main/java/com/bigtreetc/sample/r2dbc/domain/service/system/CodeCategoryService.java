@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 
-/** コード分類サービス */
+/** 分類サービス */
 @RequiredArgsConstructor
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -34,7 +34,7 @@ public class CodeCategoryService {
   @NonNull final CodeCategoryRepository codeCategoryRepository;
 
   /**
-   * コード分類を検索します。
+   * 分類を検索します。
    *
    * @param codeCategory
    * @param pageable
@@ -64,7 +64,7 @@ public class CodeCategoryService {
   }
 
   /**
-   * コード分類を取得します。
+   * 分類を取得します。
    *
    * @return
    */
@@ -75,7 +75,7 @@ public class CodeCategoryService {
   }
 
   /**
-   * コード分類を取得します。
+   * 分類を取得します。
    *
    * @param id
    * @return
@@ -89,7 +89,7 @@ public class CodeCategoryService {
   }
 
   /**
-   * コード分類を追加します。
+   * 分類を追加します。
    *
    * @param codeCategory
    * @return
@@ -101,7 +101,7 @@ public class CodeCategoryService {
   }
 
   /**
-   * コード分類を更新します。
+   * 分類を更新します。
    *
    * @param codeCategory
    * @return
@@ -112,7 +112,7 @@ public class CodeCategoryService {
   }
 
   /**
-   * コード分類を削除します。
+   * 分類を削除します。
    *
    * @return
    */

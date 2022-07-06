@@ -15,7 +15,7 @@ public class HolidayForm extends BaseForm {
 
   UUID id;
 
-  // 祝日名
+  // 名称
   @NotEmpty String holidayName;
 
   // 日付

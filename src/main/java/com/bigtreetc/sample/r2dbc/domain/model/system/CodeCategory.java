@@ -15,7 +15,7 @@ public class CodeCategory extends BaseEntityImpl implements Persistable<UUID> {
 
   private static final long serialVersionUID = -1L; // TODO
 
-  // コード分類ID
+  // 分類ID
   @Id UUID id;
 
   // カテゴリコード

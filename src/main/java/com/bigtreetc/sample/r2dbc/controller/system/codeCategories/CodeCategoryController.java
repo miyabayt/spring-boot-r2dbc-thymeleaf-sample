@@ -31,7 +31,7 @@ import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
-/** コード分類管理 */
+/** 分類管理 */
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/system/codeCategories")

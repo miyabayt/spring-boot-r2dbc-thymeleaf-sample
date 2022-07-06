@@ -1,4 +1,4 @@
-package com.bigtreetc.sample.r2dbc.controller.system.codeCategories;
+package com.bigtreetc.sample.r2dbc.controller.system.codecategories;
 
 import static com.bigtreetc.sample.r2dbc.base.util.MessageUtils.getMessage;
 import static com.bigtreetc.sample.r2dbc.base.util.TypeUtils.toListType;

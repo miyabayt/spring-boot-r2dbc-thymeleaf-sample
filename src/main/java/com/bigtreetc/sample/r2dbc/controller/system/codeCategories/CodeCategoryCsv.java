@@ -1,4 +1,4 @@
-package com.bigtreetc.sample.r2dbc.controller.system.codeCategories;
+package com.bigtreetc.sample.r2dbc.controller.system.codecategories;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

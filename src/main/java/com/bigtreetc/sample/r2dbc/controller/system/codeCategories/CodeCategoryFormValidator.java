@@ -1,10 +1,10 @@
-package com.bigtreetc.sample.r2dbc.controller.system.codeCategories;
+package com.bigtreetc.sample.r2dbc.controller.system.codecategories;
 
 import com.bigtreetc.sample.r2dbc.base.domain.validator.AbstractValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-/** コード分類マスタ登録 入力チェック */
+/** 分類マスタ登録 入力チェック */
 @Component
 public class CodeCategoryFormValidator extends AbstractValidator<CodeCategoryForm> {
 

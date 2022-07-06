@@ -1,4 +1,4 @@
-package com.bigtreetc.sample.r2dbc.controller.system.codeCategories;
+package com.bigtreetc.sample.r2dbc.controller.system.codecategories;
 
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.BaseSearchForm;
 import java.util.UUID;

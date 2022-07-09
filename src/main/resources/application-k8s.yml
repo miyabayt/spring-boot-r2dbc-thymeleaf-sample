@@ -35,4 +35,4 @@ application:
   cors:
     allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,X-XSRF-TOKEN"
     allowedMethods: "POST,GET,PUT,OPTIONS,DELETE"
-    allowedOrigins: "http://spring-boot-r2dbc-thymeleaf-sample.192.168.64.3.nip.io"
+    allowedOrigins: "*"

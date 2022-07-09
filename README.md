@@ -8,6 +8,12 @@
   ファイルに`-Dfile.encoding=UTF-8`を追記する。
 - ブラウザにLiveReload機能拡張をインストールする。
 
+## Docker
+
+```bash
+$ ./gradlew composeUp
+```
+
 ## minikube
 
 ### on MacOS

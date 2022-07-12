@@ -96,14 +96,14 @@ public class UploadFileController extends AbstractHtmlController implements Init
   @PreAuthorize("hasAuthority('uploadFile')")
   @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public Mono<Rendering> uploadFile(@RequestPart("file") FilePart file, WebSession session) {
-    return file.content()
-        .doOnNext(
-            dataBuffer -> {
-              val filename = file.filename();
-              val inputStream = dataBuffer.asInputStream(true);
-              FileUtils.saveFile(Paths.get(fileUploadLocation), filename, inputStream);
-              session.getAttributes().put(GLOBAL_MESSAGE, getMessage("uploadFiles.upload.success"));
-            })
+    val filename = file.filename();
+    val outputPath = Paths.get(fileUploadLocation).resolve(filename);
+    return file.transferTo(outputPath)
+        .doOnSuccess(
+            done ->
+                session
+                    .getAttributes()
+                    .put(GLOBAL_MESSAGE, getMessage("uploadFiles.upload.success")))
         .then(redirectTo("/system/uploadFiles/list"));
   }
 
@@ -119,20 +119,12 @@ public class UploadFileController extends AbstractHtmlController implements Init
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       headers = "x-requested-with=XMLHttpRequest")
   public Mono<ResponseEntity<?>> uploadFile(@RequestPart("file") FilePart file) {
-    return file.content()
-        .doOnNext(
-            dataBuffer -> {
-              val filename = file.filename();
-              val inputStream = dataBuffer.asInputStream(true);
-              FileUtils.saveFile(Paths.get(fileUploadLocation), filename, inputStream);
-            })
-        .then(
-            Mono.fromCallable(
-                () -> {
-                  val body =
-                      Map.of("message", getMessage("uploadFiles.upload.success"), "success", true);
-                  return ResponseEntity.ok().body(body);
-                }));
+    val filename = file.filename();
+    val outputPath = Paths.get(fileUploadLocation).resolve(filename);
+    val body =
+        Map.<String, Object>of(
+            "message", getMessage("uploadFiles.upload.success"), "success", true);
+    return file.transferTo(outputPath).thenReturn(ResponseEntity.ok().body(body));
   }
 
   /**

@@ -11,7 +11,6 @@ import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRoleRepository;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +54,7 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
                                   val roleCodes =
                                       rolePermissions.stream()
                                           .map(RolePermission::getRoleCode)
+                                          .distinct()
                                           .toList();
                                   val permissionCodes =
                                       rolePermissions.stream()
@@ -64,8 +64,11 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
                                 })
                             .map(
                                 tuple2 -> {
-                                  Set<String> authorities = new HashSet<>();
-                                  authorities.addAll(tuple2.getT1());
+                                  val roleCodes = tuple2.getT1();
+                                  val authorities = new HashSet<String>();
+                                  for (val roleCode : roleCodes) {
+                                    authorities.add("ROLE_%s".formatted(roleCode));
+                                  }
                                   authorities.addAll(tuple2.getT2());
                                   return AuthorityUtils.createAuthorityList(
                                       authorities.toArray(new String[0]));

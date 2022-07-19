@@ -15,18 +15,6 @@ spring:
   webflux:
     # HiddenHttpMethodFilterを有効にする
     hiddenmethod.filter.enabled: true
-  resources:
-    # 静的コンテンツをキャッシュする
-    cache:
-      period: 604800
-    chain:
-      # GZipされているリソースがあれば使う
-      compressed: true
-      strategy:
-        content:
-          # コンテンツのMD5ハッシュ値によるバージョニング
-          enabled: true
-          paths: /**
 management:
   endpoints:
     web:

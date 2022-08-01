@@ -67,7 +67,7 @@
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">ページタイトル</h1>
+                                <h1 class="m-0 text-md d-none d-sm-inline-block">ページタイトル</h1>
                             </div>
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
@@ -78,8 +78,10 @@
                         </div>
                     </div>
                 </div>
-                <section class="content-header" th:remove="${#strings.isEmpty(str)}? all : none" th:with="str=${GlobalMessage}">
-                    <p th:text="${str}" class="alert alert-danger"></p>
+                <section class="content-header pt-0" th:remove="${#strings.isEmpty(str)}? all : none" th:with="str=${GlobalMessage}">
+                    <div class="container-fluid">
+                        <p th:text="${str}" class="callout callout-danger text-danger"></p>
+                    </div>
                 </section>
                 <section layout:fragment="content" class="content">
                     <div class="card card-outline card-purple shadow">
@@ -93,7 +95,7 @@
                 </section>
             </div>
             <footer class="main-footer">
-                <strong>Copyright &copy; 2022- Sample Admin</strong>. All rights reserved.
+                Copyright &copy; Sample Admin. All rights reserved.
                 <div class="float-right d-none d-sm-inline-block">
                     version 0.0.1
                 </div>

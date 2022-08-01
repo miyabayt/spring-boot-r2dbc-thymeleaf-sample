@@ -4,6 +4,8 @@ spring:
       on-profile: local
   messages:
     cache-duration: -1
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
   resources:
     # キャッシュの無効化
     cache:

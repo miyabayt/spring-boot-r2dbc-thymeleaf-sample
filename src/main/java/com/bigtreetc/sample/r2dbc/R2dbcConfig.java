@@ -16,8 +16,11 @@ import org.springframework.data.domain.ReactiveAuditorAware;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
-import reactor.core.publisher.Mono;
 
 @Configuration
 @EnableConfigurationProperties(FlywayProperties.class)
@@ -55,14 +58,13 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
 
   @Bean
   public ReactiveAuditorAware<String> auditorAware() {
-    // TODO: Spring Security and OAuth2
-    //    return () -> ReactiveSecurityContextHolder.getContext()
-    //            .map(SecurityContext::getAuthentication)
-    //            .filter(Authentication::isAuthenticated)
-    //            .map(Authentication::getPrincipal)
-    //            .map(User.class::cast)
-    //            .map(User::getUsername);
-    return () -> Mono.just("TODO");
+    return () ->
+        ReactiveSecurityContextHolder.getContext()
+            .map(SecurityContext::getAuthentication)
+            .filter(Authentication::isAuthenticated)
+            .map(Authentication::getPrincipal)
+            .map(UserDetails.class::cast)
+            .map(UserDetails::getUsername);
   }
 
   @Bean(initMethod = "migrate")

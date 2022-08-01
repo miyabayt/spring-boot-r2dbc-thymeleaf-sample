@@ -2,15 +2,14 @@ package com.bigtreetc.sample.r2dbc.security;
 
 import static java.util.stream.Collectors.toList;
 
-import com.bigtreetc.sample.r2dbc.domain.model.system.Permission;
 import com.bigtreetc.sample.r2dbc.domain.model.system.RolePermission;
 import com.bigtreetc.sample.r2dbc.domain.model.system.StaffRole;
-import com.bigtreetc.sample.r2dbc.domain.repository.system.PermissionRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.system.RolePermissionRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRoleRepository;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +29,6 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
   @NonNull final StaffRoleRepository staffRoleRepository;
 
   @NonNull final RolePermissionRepository rolePermissionRepository;
-
-  @NonNull final PermissionRepository permissionRepository;
 
   @Override
   public Mono<UserDetails> findByUsername(String username) {
@@ -75,15 +72,14 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
                                 })))
         .map(
             tuple2 -> {
-              val email = tuple2.getT1().getEmail();
+              val id = Objects.requireNonNull(tuple2.getT1().getId());
               val password = tuple2.getT1().getPassword();
               val authorityList = tuple2.getT2();
-              return User.withUsername(email).password(password).authorities(authorityList).build();
+              return User.withUsername(id.toString())
+                  .password(password)
+                  .authorities(authorityList)
+                  .build();
             });
-  }
-
-  private Mono<List<Permission>> getPermissions(List<String> permissionCodes) {
-    return permissionRepository.findByPermissionCodeIn(permissionCodes).collectList();
   }
 
   private Mono<List<RolePermission>> getRolePermissions(List<String> roleCodes) {

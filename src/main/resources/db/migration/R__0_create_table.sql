@@ -104,6 +104,8 @@ CREATE TABLE IF NOT EXISTS staffs(
   , password_reset_token VARCHAR(50) DEFAULT NULL COMMENT 'パスワードリセットトークン'
   , token_expires_at DATETIME DEFAULT NULL COMMENT 'トークン失効日'
   , created_by VARCHAR(50) NOT NULL COMMENT '登録者'
+  , login_attempt_count INT(2) NOT NULL DEFAULT 0 COMMENT 'ログイン試行回数'
+  , account_locked_at DATETIME DEFAULT NULL COMMENT 'アカウントロック日時'
   , created_at DATETIME NOT NULL COMMENT '登録日時'
   , updated_by VARCHAR(50) DEFAULT NULL COMMENT '更新者'
   , updated_at DATETIME DEFAULT NULL COMMENT '更新日時'

@@ -2,11 +2,11 @@ package com.bigtreetc.sample.r2dbc.security;
 
 import static java.util.stream.Collectors.toList;
 
-import com.bigtreetc.sample.r2dbc.domain.model.system.RolePermission;
-import com.bigtreetc.sample.r2dbc.domain.model.system.StaffRole;
-import com.bigtreetc.sample.r2dbc.domain.repository.system.RolePermissionRepository;
-import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRepository;
-import com.bigtreetc.sample.r2dbc.domain.repository.system.StaffRoleRepository;
+import com.bigtreetc.sample.r2dbc.domain.model.RolePermission;
+import com.bigtreetc.sample.r2dbc.domain.model.StaffRole;
+import com.bigtreetc.sample.r2dbc.domain.repository.RolePermissionRepository;
+import com.bigtreetc.sample.r2dbc.domain.repository.StaffRepository;
+import com.bigtreetc.sample.r2dbc.domain.repository.StaffRoleRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -72,13 +72,11 @@ public class UserDetailServiceImpl implements ReactiveUserDetailsService {
                                 })))
         .map(
             tuple2 -> {
-              val id = Objects.requireNonNull(tuple2.getT1().getId());
-              val password = tuple2.getT1().getPassword();
+              val staff = tuple2.getT1();
+              val id = Objects.requireNonNull(staff.getId());
+              val password = staff.getPassword();
               val authorityList = tuple2.getT2();
-              return User.withUsername(id.toString())
-                  .password(password)
-                  .authorities(authorityList)
-                  .build();
+              return new LoginStaff(staff, id.toString(), password, authorityList);
             });
   }
 

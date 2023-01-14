@@ -4,7 +4,7 @@ import static com.bigtreetc.sample.r2dbc.base.util.MessageUtils.getMessage;
 import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.*;
 
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
-import com.bigtreetc.sample.r2dbc.domain.service.changepassword.ChangePasswordService;
+import com.bigtreetc.sample.r2dbc.domain.service.ChangePasswordService;
 import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -12,6 +12,9 @@
         <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/fontawesome.min.css}" />
     </head>
     <body class="hold-transition login-page">
+        <noscript class="w-100" style="position: absolute; top: 0;">
+            <div class="alert alert-danger rounded-0 text-center">このページではJavaScriptを使用しています。JavaScriptを有効にしてください。</div>
+        </noscript>
         <div class="login-box">
             <div class="login-logo">
                 Sample Admin
@@ -43,6 +46,9 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/webjars/AdminLTE/dist/js/adminlte.min.js}"></script>
         <script>
             <!--/* 二度押しするとforbiddenにリダイレクトされるので防止 */-->
             var submitted;

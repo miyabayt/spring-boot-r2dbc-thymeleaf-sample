@@ -4,12 +4,18 @@ import io.r2dbc.spi.ConnectionFactory;
 import java.util.List;
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
+import org.seasar.doma.jdbc.dialect.Dialect;
+import org.seasar.doma.jdbc.dialect.MysqlDialect;
+import org.seasar.doma.jdbc.dialect.PostgresDialect;
+import org.seasar.doma.jdbc.dialect.StandardDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jdbc.DatabaseDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.env.Environment;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.domain.ReactiveAuditorAware;
@@ -78,5 +84,23 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
                 flywayProperties.getUrl(),
                 flywayProperties.getUser(),
                 flywayProperties.getPassword()));
+  }
+
+  @Bean
+  public Dialect dialect(Environment environment) {
+    String url = environment.getProperty("spring.datasource.url");
+    if (url != null) {
+      DatabaseDriver databaseDriver = DatabaseDriver.fromJdbcUrl(url);
+      switch (databaseDriver) {
+        case SQLSERVER:
+        case MYSQL:
+          return new MysqlDialect();
+        case POSTGRESQL:
+          return new PostgresDialect();
+        default:
+          break;
+      }
+    }
+    return new StandardDialect();
   }
 }

@@ -115,6 +115,8 @@ public class ChangePasswordService {
               // パスワードをリセットする
               s.setPasswordResetToken(null);
               s.setTokenExpiresAt(null);
+              s.setLoginAttemptCount(0);
+              s.setAccountLockedAt(null);
               s.setPassword(password);
               return staffRepository.save(s);
             })

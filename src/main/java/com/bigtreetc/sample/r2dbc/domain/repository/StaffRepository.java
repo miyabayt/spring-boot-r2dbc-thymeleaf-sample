@@ -9,7 +9,9 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface StaffRepository
-    extends ReactiveSortingRepository<Staff, UUID>, ReactiveQueryByExampleExecutor<Staff> {
+    extends ReactiveSortingRepository<Staff, UUID>,
+        ReactiveQueryByExampleExecutor<Staff>,
+        StaffQueryRepository {
 
   Mono<Staff> findByEmail(String email);
 }

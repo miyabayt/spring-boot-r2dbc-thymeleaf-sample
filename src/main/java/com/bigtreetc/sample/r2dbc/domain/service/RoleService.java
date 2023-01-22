@@ -1,8 +1,5 @@
 package com.bigtreetc.sample.r2dbc.domain.service;
 
-import static com.bigtreetc.sample.r2dbc.base.domain.sql.DomaUtils.toSelectOptions;
-
-import com.bigtreetc.sample.r2dbc.base.domain.sql.DomaSqlBuilder;
 import com.bigtreetc.sample.r2dbc.base.exception.NoDataFoundException;
 import com.bigtreetc.sample.r2dbc.domain.model.Role;
 import com.bigtreetc.sample.r2dbc.domain.model.RoleCriteria;
@@ -15,13 +12,9 @@ import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.seasar.doma.jdbc.dialect.Dialect;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.convert.MappingR2dbcConverter;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -33,12 +26,6 @@ import reactor.core.publisher.Mono;
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class RoleService {
-
-  @NonNull final R2dbcEntityTemplate r2dbcEntityTemplate;
-
-  @NonNull final MappingR2dbcConverter converter;
-
-  @NonNull final Dialect dialect;
 
   @NonNull final RoleRepository roleRepository;
 
@@ -54,26 +41,10 @@ public class RoleService {
    * @return
    */
   @Transactional(readOnly = true) // 読み取りのみの場合は指定する
-  public Mono<Page<Role>> findAll(RoleCriteria criteria, Pageable pageable) {
-    Assert.notNull(criteria, "role must not be null");
-
-    val selectOptions = toSelectOptions(pageable);
-    val sql =
-        DomaSqlBuilder.builder()
-            .dialect(dialect)
-            .sqlFilePath(
-                "META-INF/com/bigtreetc/sample/r2dbc/domain/service/RoleService/findAll.sql")
-            .addParameter("criteria", RoleCriteria.class, criteria)
-            .options(selectOptions)
-            .build();
-
-    return r2dbcEntityTemplate
-        .getDatabaseClient()
-        .sql(sql)
-        .map((row, rowMetaData) -> converter.read(Role.class, row, rowMetaData))
-        .all()
-        .collectList()
-        .map(list -> new PageImpl<>(list, pageable, selectOptions.getCount()));
+  public Mono<Page<Role>> findAll(final RoleCriteria criteria, final Pageable pageable) {
+    Assert.notNull(criteria, "criteria must not be null");
+    Assert.notNull(pageable, "pageable must not be null");
+    return roleRepository.findAll(criteria, pageable);
   }
 
   /**

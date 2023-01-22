@@ -8,6 +8,7 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.MESSAGE_DELETED;
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.MailTemplate;
+import com.bigtreetc.sample.r2dbc.domain.model.MailTemplateCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.MailTemplateService;
 import java.util.UUID;
 import lombok.NonNull;
@@ -118,7 +119,7 @@ public class MailTemplateController extends AbstractHtmlController {
   public Mono<String> findMailTemplate(
       @ModelAttribute SearchMailTemplateForm form, Pageable pageable, Model model) {
     // 入力値を詰め替える
-    val criteria = modelMapper.map(form, MailTemplate.class);
+    val criteria = modelMapper.map(form, MailTemplateCriteria.class);
     return mailTemplateService
         .findAll(criteria, pageable)
         .doOnNext(pages -> model.addAttribute("pages", pages))
@@ -259,7 +260,7 @@ public class MailTemplateController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return mailTemplateService
-        .findAll(new MailTemplate(), Pageable.unpaged())
+        .findAll(new MailTemplateCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(MailTemplateCsv.class));

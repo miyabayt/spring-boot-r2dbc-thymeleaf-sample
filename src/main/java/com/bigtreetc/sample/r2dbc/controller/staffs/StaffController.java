@@ -8,6 +8,7 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.*;
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.Staff;
+import com.bigtreetc.sample.r2dbc.domain.model.StaffCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.StaffService;
 import java.util.UUID;
 import lombok.NonNull;
@@ -126,7 +127,7 @@ public class StaffController extends AbstractHtmlController {
   public Mono<String> findStaff(
       @ModelAttribute SearchStaffForm form, Pageable pageable, Model model) {
     // 入力値を詰め替える
-    val criteria = modelMapper.map(form, Staff.class);
+    val criteria = modelMapper.map(form, StaffCriteria.class);
     return staffService
         .findAll(criteria, pageable)
         .doOnNext(pages -> model.addAttribute("pages", pages))
@@ -270,7 +271,7 @@ public class StaffController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return staffService
-        .findAll(new Staff(), Pageable.unpaged())
+        .findAll(new StaffCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(StaffCsv.class));

@@ -10,6 +10,7 @@ import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.UploadFile;
 import com.bigtreetc.sample.r2dbc.domain.model.User;
+import com.bigtreetc.sample.r2dbc.domain.model.UserCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.UserService;
 import java.util.UUID;
 import lombok.NonNull;
@@ -127,7 +128,7 @@ public class UserController extends AbstractHtmlController {
   public Mono<String> findUser(
       @ModelAttribute SearchUserForm form, Pageable pageable, Model model) {
     // 入力値を詰め替える
-    val criteria = modelMapper.map(form, User.class);
+    val criteria = modelMapper.map(form, UserCriteria.class);
     return userService
         .findAll(criteria, pageable)
         .doOnNext(pages -> model.addAttribute("pages", pages))
@@ -293,7 +294,7 @@ public class UserController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return userService
-        .findAll(new User(), Pageable.unpaged())
+        .findAll(new UserCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(UserCsv.class));

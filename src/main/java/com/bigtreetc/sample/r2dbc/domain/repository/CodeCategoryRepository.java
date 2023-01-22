@@ -11,7 +11,8 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface CodeCategoryRepository
     extends ReactiveSortingRepository<CodeCategory, UUID>,
-        ReactiveQueryByExampleExecutor<CodeCategory> {
+        ReactiveQueryByExampleExecutor<CodeCategory>,
+        CodeCategoryQueryRepository {
 
   Mono<CodeCategory> findByCategoryCode(String categoryCode);
 }

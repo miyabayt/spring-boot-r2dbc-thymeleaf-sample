@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 /** 祝日リポジトリ */
 @Repository
 public interface HolidayRepository
-    extends ReactiveSortingRepository<Holiday, UUID>, ReactiveQueryByExampleExecutor<Holiday> {}
+    extends ReactiveSortingRepository<Holiday, UUID>,
+        ReactiveQueryByExampleExecutor<Holiday>,
+        HolidayQueryRepository {}

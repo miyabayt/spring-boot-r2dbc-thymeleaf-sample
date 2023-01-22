@@ -7,10 +7,7 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.MESSAGE_DELETED;
 
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
-import com.bigtreetc.sample.r2dbc.domain.model.Permission;
-import com.bigtreetc.sample.r2dbc.domain.model.Role;
-import com.bigtreetc.sample.r2dbc.domain.model.RoleCriteria;
-import com.bigtreetc.sample.r2dbc.domain.model.RolePermission;
+import com.bigtreetc.sample.r2dbc.domain.model.*;
 import com.bigtreetc.sample.r2dbc.domain.service.PermissionService;
 import com.bigtreetc.sample.r2dbc.domain.service.RoleService;
 import java.util.UUID;
@@ -311,6 +308,6 @@ public class RoleController extends AbstractHtmlController {
   }
 
   private Mono<Page<Permission>> getPermissions() {
-    return permissionService.findAll(new Permission(), Pageable.unpaged());
+    return permissionService.findAll(new PermissionCriteria(), Pageable.unpaged());
   }
 }

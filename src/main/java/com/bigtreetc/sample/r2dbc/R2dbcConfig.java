@@ -1,5 +1,7 @@
 package com.bigtreetc.sample.r2dbc;
 
+import com.bigtreetc.sample.r2dbc.base.domain.sql.DomaDatabaseClient;
+import com.bigtreetc.sample.r2dbc.base.domain.sql.DomaDatabaseClientImpl;
 import io.r2dbc.spi.ConnectionFactory;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +23,8 @@ import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.domain.ReactiveAuditorAware;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
+import org.springframework.data.r2dbc.convert.MappingR2dbcConverter;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -92,15 +96,20 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
     if (url != null) {
       DatabaseDriver databaseDriver = DatabaseDriver.fromJdbcUrl(url);
       switch (databaseDriver) {
-        case SQLSERVER:
-        case MYSQL:
+        case SQLSERVER, MYSQL -> {
           return new MysqlDialect();
-        case POSTGRESQL:
+        }
+        case POSTGRESQL -> {
           return new PostgresDialect();
-        default:
-          break;
+        }
       }
     }
     return new StandardDialect();
+  }
+
+  @Bean
+  public DomaDatabaseClient domaDatabaseClient(
+      R2dbcEntityTemplate r2dbcEntityTemplate, MappingR2dbcConverter converter, Dialect dialect) {
+    return new DomaDatabaseClientImpl(r2dbcEntityTemplate, converter, dialect);
   }
 }

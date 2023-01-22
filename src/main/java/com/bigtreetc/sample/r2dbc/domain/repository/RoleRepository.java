@@ -10,7 +10,9 @@ import reactor.core.publisher.Mono;
 /** ロールリポジトリ */
 @Repository
 public interface RoleRepository
-    extends ReactiveSortingRepository<Role, UUID>, ReactiveQueryByExampleExecutor<Role> {
+    extends ReactiveSortingRepository<Role, UUID>,
+        ReactiveQueryByExampleExecutor<Role>,
+        RoleQueryRepository {
 
   Mono<Void> deleteByRoleCode(String roleCode);
 }

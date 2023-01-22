@@ -3,10 +3,7 @@ package com.bigtreetc.sample.r2dbc.base.domain.sql;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,26 +51,18 @@ public class DomaSqlBuilder {
   }
 
   public <T> DomaSqlBuilder addParameter(String name, Class<?> type, Object value) {
-    parameters.put(name, new Value(type, value));
+    this.parameters.put(name, new Value(type, value));
     return this;
   }
 
-  public String build() {
+  public SqlStatement build() {
     String sqlTemplate = getSqlTemplate(this.sqlFilePath);
     SqlParser parser = new SqlParser(sqlTemplate);
     SqlNode node = parser.parse();
     SqlNode transformedSqlNode = this.dialect.transformSelectSqlNode(node, this.options);
     NodePreparedSqlBuilder builder = createNodePreparedSqlBuilder();
     PreparedSql preparedSql = builder.build(transformedSqlNode, Function.identity());
-    SqlStatement statement = toSqlStatement(preparedSql);
-    return getFormattedSql(statement);
-  }
-
-  private String getFormattedSql(SqlStatement statement) {
-    String formattedSql = statement.getFormattedSql();
-    formattedSql = formattedSql.replace("\n", " ").replace("\r", " ");
-    formattedSql = formattedSql.replaceAll("\\s{2,}", " ");
-    return formattedSql;
+    return toSqlStatement(preparedSql);
   }
 
   private NodePreparedSqlBuilder createNodePreparedSqlBuilder() {
@@ -105,7 +94,16 @@ public class DomaSqlBuilder {
                   return new SqlArgument(w.getBasicClass(), w.get());
                 })
             .collect(Collectors.toList());
-    return new SqlStatement(preparedSql.getRawSql(), preparedSql.getFormattedSql(), arguments);
+    String rawSql = getFormattedSql(preparedSql.getRawSql());
+    String formattedSql = getFormattedSql(preparedSql.getFormattedSql());
+    return new SqlStatement(rawSql, formattedSql, arguments);
+  }
+
+  private String getFormattedSql(String rawSql) {
+    String formattedSql = rawSql;
+    formattedSql = formattedSql.replace("\n", " ").replace("\r", " ");
+    formattedSql = formattedSql.replaceAll("\\s{2,}", " ");
+    return formattedSql;
   }
 
   @SneakyThrows

@@ -1,24 +1,15 @@
 package com.bigtreetc.sample.r2dbc.domain.service;
 
-import static com.bigtreetc.sample.r2dbc.base.util.ValidateUtils.isNotEmpty;
-import static org.springframework.data.relational.core.query.Criteria.where;
-
 import com.bigtreetc.sample.r2dbc.base.exception.NoDataFoundException;
 import com.bigtreetc.sample.r2dbc.domain.model.User;
+import com.bigtreetc.sample.r2dbc.domain.model.UserCriteria;
 import com.bigtreetc.sample.r2dbc.domain.repository.UserRepository;
-import java.util.ArrayList;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.convert.MappingR2dbcConverter;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.data.relational.core.query.Criteria;
-import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -30,41 +21,20 @@ import reactor.core.publisher.Mono;
 @Transactional(rollbackFor = Throwable.class)
 public class UserService {
 
-  @NonNull final R2dbcEntityTemplate r2dbcEntityTemplate;
-
-  @NonNull final MappingR2dbcConverter converter;
-
   @NonNull final UserRepository userRepository;
 
   /**
    * ユーザを検索します。
    *
-   * @param user
+   * @param criteria
    * @param pageable
    * @return
    */
   @Transactional(readOnly = true) // 読み取りのみの場合は指定する
-  public Mono<Page<User>> findAll(User user, Pageable pageable) {
-    Assert.notNull(user, "user must not be null");
-    val criteria = new ArrayList<Criteria>();
-    if (isNotEmpty(user.getFirstName())) {
-      criteria.add(where("first_name").like("%%%s%%".formatted(user.getFirstName())));
-    }
-    if (isNotEmpty(user.getLastName())) {
-      criteria.add(where("last_name").like("%%%s%%".formatted(user.getLastName())));
-    }
-    if (isNotEmpty(user.getEmail())) {
-      criteria.add(where("email").like("%%%s%%".formatted(user.getEmail())));
-    }
-
-    val query = Query.query(Criteria.from(criteria));
-    return r2dbcEntityTemplate
-        .select(User.class)
-        .matching(query.with(pageable))
-        .all()
-        .collectList()
-        .zipWith(r2dbcEntityTemplate.count(query, User.class))
-        .map(tuple2 -> new PageImpl<>(tuple2.getT1(), pageable, tuple2.getT2()));
+  public Mono<Page<User>> findAll(final UserCriteria criteria, final Pageable pageable) {
+    Assert.notNull(criteria, "criteria must not be null");
+    Assert.notNull(pageable, "pageable must not be null");
+    return userRepository.findAll(criteria, pageable);
   }
 
   /**

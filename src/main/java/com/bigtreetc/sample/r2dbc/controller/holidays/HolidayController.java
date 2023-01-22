@@ -8,6 +8,7 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.MESSAGE_DELETED;
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.Holiday;
+import com.bigtreetc.sample.r2dbc.domain.model.HolidayCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.HolidayService;
 import java.util.UUID;
 import lombok.NonNull;
@@ -119,7 +120,7 @@ public class HolidayController extends AbstractHtmlController {
   public Mono<String> findHoliday(
       @ModelAttribute("searchHolidayForm") SearchHolidayForm form, Pageable pageable, Model model) {
     // 入力値から検索条件を作成する
-    val criteria = modelMapper.map(form, Holiday.class);
+    val criteria = modelMapper.map(form, HolidayCriteria.class);
     return holidayService
         .findAll(criteria, pageable)
         .doOnNext(pages -> model.addAttribute("pages", pages))
@@ -258,7 +259,7 @@ public class HolidayController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return holidayService
-        .findAll(new Holiday(), Pageable.unpaged())
+        .findAll(new HolidayCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(HolidayCsv.class));

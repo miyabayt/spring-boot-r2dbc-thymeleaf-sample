@@ -8,7 +8,8 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.MESSAGE_DELETED;
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.Code;
-import com.bigtreetc.sample.r2dbc.domain.model.CodeCategory;
+import com.bigtreetc.sample.r2dbc.domain.model.CodeCategoryCriteria;
+import com.bigtreetc.sample.r2dbc.domain.model.CodeCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.CodeCategoryService;
 import com.bigtreetc.sample.r2dbc.domain.service.CodeService;
 import java.util.UUID;
@@ -80,7 +81,7 @@ public class CodeController extends AbstractHtmlController {
     }
 
     return codeCategoryService
-        .findAll(new CodeCategory(), Pageable.unpaged())
+        .findAll(new CodeCategoryCriteria(), Pageable.unpaged())
         .flatMap(
             pages -> {
               model.addAttribute("codeCategories", pages);
@@ -126,10 +127,10 @@ public class CodeController extends AbstractHtmlController {
   public Mono<String> findCode(
       @ModelAttribute("searchCodeForm") SearchCodeForm form, Pageable pageable, Model model) {
     // 入力値から検索条件を作成する
-    val criteria = modelMapper.map(form, Code.class);
+    val criteria = modelMapper.map(form, CodeCriteria.class);
     return codeService
         .findAll(criteria, pageable)
-        .zipWith(codeCategoryService.findAll(new CodeCategory(), Pageable.unpaged()))
+        .zipWith(codeCategoryService.findAll(new CodeCategoryCriteria(), Pageable.unpaged()))
         .doOnNext(
             tuple2 -> {
               model.addAttribute("pages", tuple2.getT1());
@@ -193,7 +194,7 @@ public class CodeController extends AbstractHtmlController {
       WebSession session) {
     return codeService
         .findById(codeId)
-        .zipWith(codeCategoryService.findAll(new CodeCategory(), Pageable.unpaged()))
+        .zipWith(codeCategoryService.findAll(new CodeCategoryCriteria(), Pageable.unpaged()))
         .flatMap(
             tuple2 -> {
               // セッションから取得できる場合は、読み込み直さない
@@ -272,7 +273,7 @@ public class CodeController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return codeService
-        .findAll(new Code(), Pageable.unpaged())
+        .findAll(new CodeCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(CodeCsv.class));

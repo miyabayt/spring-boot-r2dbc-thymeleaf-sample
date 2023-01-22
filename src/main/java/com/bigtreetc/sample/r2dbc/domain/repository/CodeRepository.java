@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 /** コードリポジトリ */
 @Repository
 public interface CodeRepository
-    extends ReactiveSortingRepository<Code, UUID>, ReactiveQueryByExampleExecutor<Code> {}
+    extends ReactiveSortingRepository<Code, UUID>,
+        ReactiveQueryByExampleExecutor<Code>,
+        CodeQueryRepository {}

@@ -8,6 +8,7 @@ import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.MESSAGE_DELETED;
 import com.bigtreetc.sample.r2dbc.base.util.CsvUtils;
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.AbstractHtmlController;
 import com.bigtreetc.sample.r2dbc.domain.model.CodeCategory;
+import com.bigtreetc.sample.r2dbc.domain.model.CodeCategoryCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.CodeCategoryService;
 import java.util.UUID;
 import lombok.NonNull;
@@ -120,10 +121,10 @@ public class CodeCategoryController extends AbstractHtmlController {
       Pageable pageable,
       Model model) {
     // 入力値から検索条件を作成する
-    val criteria = modelMapper.map(form, CodeCategory.class);
+    val criteria = modelMapper.map(form, CodeCategoryCriteria.class);
     return codeCategoryService
         .findAll(criteria, pageable)
-        .zipWith(codeCategoryService.findAll(new CodeCategory(), Pageable.unpaged()))
+        .zipWith(codeCategoryService.findAll(new CodeCategoryCriteria(), Pageable.unpaged()))
         .doOnNext(
             tuple2 -> {
               model.addAttribute("pages", tuple2.getT1());
@@ -266,7 +267,7 @@ public class CodeCategoryController extends AbstractHtmlController {
   public Mono<ResponseEntity<Resource>> downloadCsv(
       @PathVariable String filename, ServerHttpResponse response) {
     return codeCategoryService
-        .findAll(new CodeCategory(), Pageable.unpaged())
+        .findAll(new CodeCategoryCriteria(), Pageable.unpaged())
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(CodeCategoryCsv.class));

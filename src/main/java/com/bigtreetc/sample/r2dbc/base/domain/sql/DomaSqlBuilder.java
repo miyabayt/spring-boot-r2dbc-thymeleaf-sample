@@ -3,7 +3,10 @@ package com.bigtreetc.sample.r2dbc.base.domain.sql;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,14 +58,17 @@ public class DomaSqlBuilder {
     return this;
   }
 
-  public SqlStatement build() {
+  public DomaSqlStatement build() {
     String sqlTemplate = getSqlTemplate(this.sqlFilePath);
     SqlParser parser = new SqlParser(sqlTemplate);
     SqlNode node = parser.parse();
     SqlNode transformedSqlNode = this.dialect.transformSelectSqlNode(node, this.options);
+    SqlNode countSqlNode = this.dialect.transformSelectSqlNodeForGettingCount(node);
     NodePreparedSqlBuilder builder = createNodePreparedSqlBuilder();
     PreparedSql preparedSql = builder.build(transformedSqlNode, Function.identity());
-    return toSqlStatement(preparedSql);
+    PreparedSql countPreparedSql = builder.build(countSqlNode, Function.identity());
+    SqlStatement sqlStatement = toSqlStatement(preparedSql);
+    return new DomaSqlStatement(sqlStatement, countPreparedSql);
   }
 
   private NodePreparedSqlBuilder createNodePreparedSqlBuilder() {

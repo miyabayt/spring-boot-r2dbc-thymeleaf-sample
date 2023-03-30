@@ -2,10 +2,10 @@ package com.bigtreetc.sample.r2dbc.controller.users;
 
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.BaseForm;
 import com.bigtreetc.sample.r2dbc.base.web.validator.annotation.ContentType;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.UUID;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.MediaType;

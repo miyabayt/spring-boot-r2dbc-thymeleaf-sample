@@ -1,10 +1,10 @@
 package com.bigtreetc.sample.r2dbc.domain.model;
 
 import com.bigtreetc.sample.r2dbc.base.domain.model.BaseEntityImpl;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -22,10 +22,10 @@ public class Staff extends BaseEntityImpl implements Persistable<UUID> {
 
   String password;
 
-  // 名前
+  // 名
   String firstName;
 
-  // 苗字
+  // 姓
   String lastName;
 
   // メールアドレス

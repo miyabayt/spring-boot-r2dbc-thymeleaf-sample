@@ -1,10 +1,10 @@
 package com.bigtreetc.sample.r2dbc.controller.staffs;
 
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.BaseForm;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.UUID;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,14 +16,16 @@ public class StaffForm extends BaseForm {
 
   UUID id;
 
-  // 名前
+  // 名
   @NotEmpty String firstName;
 
-  // 苗字
+  // 性
   @NotEmpty String lastName;
 
+  // パスワード
   @NotEmpty String password;
 
+  // パスワード確認用
   @NotEmpty String passwordConfirm;
 
   // メールアドレス

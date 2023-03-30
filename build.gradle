@@ -2,12 +2,13 @@ plugins {
     id "java"
     id "idea"
     id "org.springframework.boot" version "${springBootVersion}"
-    id "io.spring.dependency-management" version "${dependencyManagementVersion}"
     id "org.eclipse.jkube.kubernetes" version "${jkubeVersion}"
     id "com.avast.gradle.docker-compose" version "0.16.9"
     id "com.diffplug.spotless" version "${spotlessVersion}"
     id "jacoco"
 }
+
+apply plugin: "io.spring.dependency-management"
 
 repositories {
     mavenCentral()
@@ -71,13 +72,14 @@ dependencies {
 
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-mysql"
-    runtimeOnly "dev.miku:r2dbc-mysql:0.8.2.RELEASE"
-    runtimeOnly "mysql:mysql-connector-java"
+
+    runtimeOnly "io.asyncer:r2dbc-mysql:0.9.1"
+    runtimeOnly "com.mysql:mysql-connector-j"
     // runtimeOnly "io.r2dbc:r2dbc-postgresql"
     // runtimeOnly "org.postgresql:postgresql"
 
     implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect"
-    implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
+    implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity6"
     implementation "org.webjars:webjars-locator-core"
     implementation "org.webjars:bootstrap:4.6.2"
     implementation "org.webjars:jquery:3.6.1"
@@ -101,6 +103,8 @@ dependencies {
     testImplementation "org.assertj:assertj-core"
     testImplementation "org.codehaus.groovy:groovy"
     testImplementation "org.mockito:mockito-core"
+
+    runtimeOnly "org.springframework.boot:spring-boot-properties-migrator"
 }
 
 tasks.named("test") {

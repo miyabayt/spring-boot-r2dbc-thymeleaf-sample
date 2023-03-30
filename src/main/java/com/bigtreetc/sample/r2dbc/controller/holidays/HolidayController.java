@@ -263,7 +263,7 @@ public class HolidayController extends AbstractHtmlController {
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(HolidayCsv.class));
-              val dataBuffer = response.bufferFactory().allocateBuffer();
+              val dataBuffer = response.bufferFactory().allocateBuffer(1024);
               CsvUtils.writeCsv(HolidayCsv.class, csvList, dataBuffer);
               return new InputStreamResource(dataBuffer.asInputStream(true));
             })

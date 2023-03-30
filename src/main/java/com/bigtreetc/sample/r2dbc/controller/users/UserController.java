@@ -12,6 +12,7 @@ import com.bigtreetc.sample.r2dbc.domain.model.UploadFile;
 import com.bigtreetc.sample.r2dbc.domain.model.User;
 import com.bigtreetc.sample.r2dbc.domain.model.UserCriteria;
 import com.bigtreetc.sample.r2dbc.domain.service.UserService;
+import java.util.Base64;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.Base64Utils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -177,7 +177,7 @@ public class UserController extends AbstractHtmlController {
                 val uploadFile = user.getUploadFile();
 
                 // Base64デコードして解凍する
-                val base64data = Base64Utils.encodeToString(uploadFile.getContent());
+                val base64data = Base64.getEncoder().encodeToString(uploadFile.getContent());
                 model.addAttribute("image", "data:image/png;base64," + base64data);
               }
             })
@@ -298,7 +298,7 @@ public class UserController extends AbstractHtmlController {
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(UserCsv.class));
-              val dataBuffer = response.bufferFactory().allocateBuffer();
+              val dataBuffer = response.bufferFactory().allocateBuffer(1024);
               CsvUtils.writeCsv(UserCsv.class, csvList, dataBuffer);
               return new InputStreamResource(dataBuffer.asInputStream(true));
             })

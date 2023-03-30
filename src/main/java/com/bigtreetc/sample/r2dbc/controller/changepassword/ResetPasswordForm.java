@@ -1,7 +1,7 @@
 package com.bigtreetc.sample.r2dbc.controller.changepassword;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import javax.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 

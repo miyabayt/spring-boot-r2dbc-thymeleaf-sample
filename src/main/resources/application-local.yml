@@ -6,10 +6,11 @@ spring:
     cache-duration: -1
   thymeleaf:
     prefix: file:src/main/resources/templates/
-  resources:
-    # キャッシュの無効化
-    cache:
-      period: 0
+  web:
+    resources:
+      # キャッシュの無効化
+      cache:
+        period: 0
   mail:
     protocol: smtp
     host: 127.0.0.1
@@ -30,9 +31,10 @@ spring:
     password: ${spring.r2dbc.password}
     baseline-on-migrate: true
     placeholder-replacement: false
-  redis:
-    host: 127.0.0.1
-    port: 6379
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 logging:
   level:
     org.springframework.r2dbc: DEBUG

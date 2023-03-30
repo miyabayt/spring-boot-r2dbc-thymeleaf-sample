@@ -57,9 +57,7 @@ public class SecurityConfig {
       ServerHttpSecurity http, ReactiveAuthenticationManager authenticationManager) {
 
     // CookieにCSRFトークンを保存する
-    http.csrf()
-        .tokenFromMultipartDataEnabled(true)
-        .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse());
+    http.csrf().csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse());
 
     String[] permittedUrls = {
       LOGIN_URL,

@@ -264,7 +264,7 @@ public class MailTemplateController extends AbstractHtmlController {
         .map(
             pages -> {
               val csvList = modelMapper.map(pages.getContent(), toListType(MailTemplateCsv.class));
-              val dataBuffer = response.bufferFactory().allocateBuffer();
+              val dataBuffer = response.bufferFactory().allocateBuffer(1024);
               CsvUtils.writeCsv(MailTemplateCsv.class, csvList, dataBuffer);
               return new InputStreamResource(dataBuffer.asInputStream(true));
             })

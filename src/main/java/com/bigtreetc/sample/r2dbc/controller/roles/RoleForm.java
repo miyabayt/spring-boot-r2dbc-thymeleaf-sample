@@ -1,10 +1,10 @@
 package com.bigtreetc.sample.r2dbc.controller.roles;
 
 import com.bigtreetc.sample.r2dbc.base.web.controller.html.BaseForm;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import javax.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 

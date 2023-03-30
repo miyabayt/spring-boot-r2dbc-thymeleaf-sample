@@ -17,5 +17,7 @@ public class SearchStaffForm implements Serializable {
 
   String lastName;
 
+  String fullName;
+
   String email;
 }

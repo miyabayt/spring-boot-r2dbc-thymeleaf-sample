@@ -42,8 +42,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <input th:replace="~{fragments/searchInputField :: input ('text', '姓', 'lastName')}" />
-                            <input th:replace="~{fragments/searchInputField :: input ('text', '名', 'firstName')}" />
+                            <input th:replace="~{fragments/searchInputField :: input ('text', '氏名', 'fullName')}" />
                             <input th:replace="~{fragments/searchInputField :: input ('text', 'メールアドレス', 'email')}" />
                         </div>
                         <div class="card-footer">

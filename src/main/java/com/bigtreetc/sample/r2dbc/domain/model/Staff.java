@@ -8,6 +8,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -27,6 +28,9 @@ public class Staff extends BaseEntityImpl implements Persistable<UUID> {
 
   // 姓
   String lastName;
+
+  // 氏名
+  @Transient String fullName;
 
   // メールアドレス
   @Email String email;

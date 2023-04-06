@@ -101,7 +101,6 @@ dependencies {
     testImplementation "io.r2dbc:r2dbc-h2"
 
     testImplementation "org.assertj:assertj-core"
-    testImplementation "org.codehaus.groovy:groovy"
     testImplementation "org.mockito:mockito-core"
 
     runtimeOnly "org.springframework.boot:spring-boot-properties-migrator"

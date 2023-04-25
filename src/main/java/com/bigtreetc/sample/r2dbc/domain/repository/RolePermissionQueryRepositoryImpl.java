@@ -21,13 +21,18 @@ public class RolePermissionQueryRepositoryImpl implements RolePermissionQueryRep
 
   @NonNull final DomaDatabaseClient databaseClient;
 
-  /**
-   * 指定された条件で担当者マスタを検索します。
-   *
-   * @param criteria
-   * @param pageable
-   * @return
-   */
+  @Override
+  public Mono<RolePermission> findOne(final RolePermissionCriteria criteria) {
+    val sqlBuilder =
+        DomaSqlBuilder.builder()
+            .sqlFilePath(
+                "META-INF/com/bigtreetc/sample/r2dbc/domain/repository/RolePermissionQueryRepository/findAll.sql")
+            .addParameter("criteria", RolePermissionCriteria.class, criteria);
+
+    return databaseClient.one(sqlBuilder, RolePermission.class);
+  }
+
+  @Override
   public Mono<Page<RolePermission>> findAll(
       final RolePermissionCriteria criteria, final Pageable pageable) {
     val selectOptions = toSelectOptions(pageable);
@@ -39,7 +44,7 @@ public class RolePermissionQueryRepositoryImpl implements RolePermissionQueryRep
             .options(selectOptions);
 
     return databaseClient
-        .all(sqlBuilder, RolePermission.class)
+        .allWithCount(sqlBuilder, RolePermission.class)
         .map(tuple2 -> new PageImpl<>(tuple2.getT1(), pageable, tuple2.getT2()));
   }
 }

@@ -1,7 +1,6 @@
 package com.bigtreetc.sample.r2dbc.controller.staffs;
 
 import static com.bigtreetc.sample.r2dbc.base.util.MessageUtils.getMessage;
-import static com.bigtreetc.sample.r2dbc.base.util.TypeUtils.toListType;
 import static com.bigtreetc.sample.r2dbc.base.util.ValidateUtils.isNotEmpty;
 import static com.bigtreetc.sample.r2dbc.base.web.BaseWebConst.*;
 
@@ -15,10 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.WebSession;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /** 担当者管理 */
@@ -264,21 +261,25 @@ public class StaffController extends AbstractHtmlController {
    * CSVダウンロード
    *
    * @param filename
+   * @param response
    * @return
    */
   @PreAuthorize("hasAuthority('staff:read')")
   @GetMapping("/download/{filename:.+\\.csv}")
-  public Mono<ResponseEntity<Resource>> downloadCsv(
-      @PathVariable String filename, ServerHttpResponse response) {
-    return staffService
-        .findAll(new StaffCriteria(), Pageable.unpaged())
-        .map(
-            pages -> {
-              val csvList = modelMapper.map(pages.getContent(), toListType(StaffCsv.class));
-              val dataBuffer = response.bufferFactory().allocateBuffer(1024);
-              CsvUtils.writeCsv(StaffCsv.class, csvList, dataBuffer);
-              return new InputStreamResource(dataBuffer.asInputStream(true));
-            })
-        .map(resource -> toResponseEntity(resource, filename, true));
+  public Mono<Void> downloadCsv(@PathVariable String filename, ServerHttpResponse response) {
+    // ダウンロード時のファイル名をセットする
+    setContentDispositionHeader(response, filename, true);
+
+    val dataBufferFactory = response.bufferFactory();
+    val criteria = new StaffCriteria();
+    val data = staffService.findAll(criteria);
+    val dataBufferFlux =
+        CsvUtils.writeCsv(
+            dataBufferFactory,
+            StaffCsv.class,
+            data,
+            staff -> modelMapper.map(staff, StaffCsv.class));
+
+    return response.writeAndFlushWith(dataBufferFlux.map(Flux::just));
   }
 }

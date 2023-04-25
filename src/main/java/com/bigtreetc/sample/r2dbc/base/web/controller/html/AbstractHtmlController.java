@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -84,5 +85,17 @@ public abstract class AbstractHtmlController {
     }
 
     return responseEntity.body(resource);
+  }
+
+  @SneakyThrows
+  protected void setContentDispositionHeader(
+      ServerHttpResponse response, String filename, boolean isAttachment) {
+    response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+    if (isAttachment) {
+      val encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
+      val contentDisposition = String.format("attachment; filename*=UTF-8''%s", encodedFilename);
+      response.getHeaders().set(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
+    }
   }
 }

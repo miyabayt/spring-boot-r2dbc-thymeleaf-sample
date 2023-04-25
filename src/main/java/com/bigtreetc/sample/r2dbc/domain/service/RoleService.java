@@ -1,14 +1,12 @@
 package com.bigtreetc.sample.r2dbc.domain.service;
 
 import com.bigtreetc.sample.r2dbc.base.exception.NoDataFoundException;
-import com.bigtreetc.sample.r2dbc.domain.model.Role;
-import com.bigtreetc.sample.r2dbc.domain.model.RoleCriteria;
-import com.bigtreetc.sample.r2dbc.domain.model.RolePermission;
+import com.bigtreetc.sample.r2dbc.domain.model.*;
 import com.bigtreetc.sample.r2dbc.domain.repository.PermissionRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.RolePermissionRepository;
 import com.bigtreetc.sample.r2dbc.domain.repository.RoleRepository;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -21,7 +19,7 @@ import org.springframework.util.Assert;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-/** ロールサービス */
+/** ロールマスタサービス */
 @RequiredArgsConstructor
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -34,7 +32,7 @@ public class RoleService {
   @NonNull final PermissionRepository permissionRepository;
 
   /**
-   * ロールを検索します。
+   * ロールマスタを検索します。
    *
    * @param criteria
    * @param pageable
@@ -48,22 +46,36 @@ public class RoleService {
   }
 
   /**
-   * ロールを取得します。
+   * ロールマスタを検索します。
    *
+   * @param criteria
+   * @return
+   */
+  @Transactional(readOnly = true) // 読み取りのみの場合は指定する
+  public Flux<Role> findAll(final RoleCriteria criteria) {
+    Assert.notNull(criteria, "criteria must not be null");
+    return roleRepository.findAll(criteria);
+  }
+
+  /**
+   * ロールマスタを取得します。
+   *
+   * @param criteria
    * @return
    */
   @Transactional(readOnly = true)
-  public Mono<Role> findOne(Role role) {
-    Assert.notNull(role, "role must not be null");
+  public Mono<Role> findOne(RoleCriteria criteria) {
+    Assert.notNull(criteria, "criteria must not be null");
     return roleRepository
-        .findOne(Example.of(role))
+        .findOne(Example.of(criteria))
         .flatMap(this::getRolePermissions)
         .flatMap(this::getPermissions);
   }
 
   /**
-   * ロールを取得します。
+   * ロールマスタを取得します。
    *
+   * @param id
    * @return
    */
   @Transactional(readOnly = true)
@@ -77,7 +89,7 @@ public class RoleService {
   }
 
   /**
-   * ロールを追加します。
+   * ロールマスタを登録します。
    *
    * @param role
    * @return
@@ -95,7 +107,21 @@ public class RoleService {
   }
 
   /**
-   * ロールを更新します。
+   * ロールマスタを登録します。
+   *
+   * @param roles
+   * @return
+   */
+  public Flux<Role> create(final List<Role> roles) {
+    Assert.notNull(roles, "roles must not be null");
+    for (val role : roles) {
+      role.setId(UUID.randomUUID());
+    }
+    return roleRepository.saveAll(roles);
+  }
+
+  /**
+   * ロールマスタを更新します。
    *
    * @param role
    * @return
@@ -112,7 +138,18 @@ public class RoleService {
   }
 
   /**
-   * ロールを削除します。
+   * ロールマスタを更新します。
+   *
+   * @param roles
+   * @return
+   */
+  public Flux<Role> update(final List<Role> roles) {
+    Assert.notNull(roles, "role must not be null");
+    return roleRepository.saveAll(roles);
+  }
+
+  /**
+   * ロールマスタを削除します。
    *
    * @return
    */
@@ -129,6 +166,16 @@ public class RoleService {
             });
   }
 
+  /**
+   * ロールマスタを削除します。
+   *
+   * @return
+   */
+  public Mono<Void> delete(final List<UUID> ids) {
+    Assert.notNull(ids, "id must not be null");
+    return roleRepository.deleteAllById(ids);
+  }
+
   private Mono<Role> getRolePermissions(Role r) {
     return rolePermissionRepository
         .findByRoleCode(r.getRoleCode())
@@ -142,9 +189,7 @@ public class RoleService {
 
   private Mono<Role> getPermissions(Role role) {
     val permissionCodes =
-        role.getRolePermissions().stream()
-            .map(RolePermission::getPermissionCode)
-            .collect(Collectors.toList());
+        role.getRolePermissions().stream().map(RolePermission::getPermissionCode).toList();
     return permissionRepository
         .findByPermissionCodeIn(permissionCodes)
         .collectList()

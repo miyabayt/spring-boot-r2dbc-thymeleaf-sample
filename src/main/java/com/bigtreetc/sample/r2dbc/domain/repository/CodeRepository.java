@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 
-/** コードリポジトリ */
+/** コードマスタリポジトリ */
 @Repository
 public interface CodeRepository
     extends ReactiveSortingRepository<Code, UUID>,

@@ -4,7 +4,7 @@
             <th:block th:fragment="input (type, label, name, value, format)">
                 <div th:with="valid=${!#fields.hasErrors(name)}" th:class="${'form-group' + (valid ? '' : ' has-error')}" class="form-group">
                     <div class="row form-group">
-                        <label class="col-sm-2 control-label" th:text="${label}">Label</label>
+                        <label class="col-sm-2 col-form-label" th:text="${label}">Label</label>
                         <div class="input-group col-sm-3">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">

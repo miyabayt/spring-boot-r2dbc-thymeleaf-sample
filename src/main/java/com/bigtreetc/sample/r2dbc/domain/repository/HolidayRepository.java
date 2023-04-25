@@ -7,7 +7,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 
-/** 祝日リポジトリ */
+/** 祝日マスタリポジトリ */
 @Repository
 public interface HolidayRepository
     extends ReactiveSortingRepository<Holiday, UUID>,

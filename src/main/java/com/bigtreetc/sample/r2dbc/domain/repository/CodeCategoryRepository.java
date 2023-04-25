@@ -8,7 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-/** 分類リポジトリ */
+/** コード分類マスタリポジトリ */
 @Repository
 public interface CodeCategoryRepository
     extends ReactiveSortingRepository<CodeCategory, UUID>,

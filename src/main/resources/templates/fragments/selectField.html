@@ -4,7 +4,7 @@
             <th:block th:fragment="select (label, name, items, k, v)">
                 <div th:with="valid=${!#fields.hasErrors(name)}" th:class="${'form-group' + (valid ? '' : ' has-error')}" class="form-group">
                     <div class="row">
-                        <label class="col-sm-2 control-label" th:text="${label}">Label</label>
+                        <label class="col-sm-2 col-form-label" th:text="${label}">Label</label>
                         <div class="col-sm-3">
                             <select class="form-control" th:field="*{__${name}__}">
                                 <option value=""

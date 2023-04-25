@@ -8,6 +8,8 @@ import reactor.core.publisher.Mono;
 
 public interface RolePermissionQueryRepository {
 
+  Mono<RolePermission> findOne(final RolePermissionCriteria criteria);
+
   Mono<Page<RolePermission>> findAll(
       final RolePermissionCriteria criteria, final Pageable pageable);
 }

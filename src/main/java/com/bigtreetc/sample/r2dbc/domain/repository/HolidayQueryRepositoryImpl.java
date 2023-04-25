@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -21,13 +22,18 @@ public class HolidayQueryRepositoryImpl implements HolidayQueryRepository {
 
   @NonNull final DomaDatabaseClient databaseClient;
 
-  /**
-   * 指定された条件で祝日マスタを検索します。
-   *
-   * @param criteria
-   * @param pageable
-   * @return
-   */
+  @Override
+  public Mono<Holiday> findOne(final HolidayCriteria criteria) {
+    val sqlBuilder =
+        DomaSqlBuilder.builder()
+            .sqlFilePath(
+                "META-INF/com/bigtreetc/sample/r2dbc/domain/repository/HolidayQueryRepository/findAll.sql")
+            .addParameter("criteria", HolidayCriteria.class, criteria);
+
+    return databaseClient.one(sqlBuilder, Holiday.class);
+  }
+
+  @Override
   public Mono<Page<Holiday>> findAll(final HolidayCriteria criteria, final Pageable pageable) {
     val selectOptions = toSelectOptions(pageable);
     val sqlBuilder =
@@ -38,7 +44,18 @@ public class HolidayQueryRepositoryImpl implements HolidayQueryRepository {
             .options(selectOptions);
 
     return databaseClient
-        .all(sqlBuilder, Holiday.class)
+        .allWithCount(sqlBuilder, Holiday.class)
         .map(tuple2 -> new PageImpl<>(tuple2.getT1(), pageable, tuple2.getT2()));
+  }
+
+  @Override
+  public Flux<Holiday> findAll(final HolidayCriteria criteria) {
+    val sqlBuilder =
+        DomaSqlBuilder.builder()
+            .sqlFilePath(
+                "META-INF/com/bigtreetc/sample/r2dbc/domain/repository/HolidayQueryRepository/findAll.sql")
+            .addParameter("criteria", HolidayCriteria.class, criteria);
+
+    return databaseClient.all(sqlBuilder, Holiday.class);
   }
 }

@@ -23,6 +23,7 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authorization.HttpStatusServerAccessDeniedHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
@@ -57,7 +58,11 @@ public class SecurityConfig {
       ServerHttpSecurity http, ReactiveAuthenticationManager authenticationManager) {
 
     // CookieにCSRFトークンを保存する
-    http.csrf().csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse());
+    val tokenRepository = CookieServerCsrfTokenRepository.withHttpOnlyFalse();
+    val requestHandler = new ServerCsrfTokenRequestAttributeHandler();
+    requestHandler.setTokenFromMultipartDataEnabled(true);
+    http.csrf(
+        csrf -> csrf.csrfTokenRepository(tokenRepository).csrfTokenRequestHandler(requestHandler));
 
     String[] permittedUrls = {
       LOGIN_URL,
@@ -75,25 +80,25 @@ public class SecurityConfig {
     val customLogoutSuccessHandler = new CustomServerLogoutSuccessHandler(logoutSuccessHandler);
     val loginFailureHandler = new CustomServerAuthenticationFailureHandler(LOGIN_URL);
 
-    http.authorizeExchange()
-        .pathMatchers(permittedUrls)
-        .permitAll()
-        .anyExchange()
-        .authenticated()
-        .and()
-        .exceptionHandling()
-        .authenticationEntryPoint(new DefaultAuthenticationEntryPoint(LOGIN_URL))
-        .accessDeniedHandler(new HttpStatusServerAccessDeniedHandler(HttpStatus.FORBIDDEN))
-        .and()
-        .formLogin()
-        .loginPage(LOGIN_URL)
-        .authenticationManager(authenticationManager)
-        .authenticationSuccessHandler(authenticationSuccessHandler)
-        .authenticationFailureHandler(loginFailureHandler)
-        .and()
-        .logout()
-        .logoutUrl(LOGOUT_URL)
-        .logoutSuccessHandler(customLogoutSuccessHandler);
+    http.authorizeExchange(
+            authorize ->
+                authorize.pathMatchers(permittedUrls).permitAll().anyExchange().authenticated())
+        .exceptionHandling(
+            exceptionHandling ->
+                exceptionHandling
+                    .authenticationEntryPoint(new DefaultAuthenticationEntryPoint(LOGIN_URL))
+                    .accessDeniedHandler(
+                        new HttpStatusServerAccessDeniedHandler(HttpStatus.FORBIDDEN)))
+        .formLogin(
+            formLogin ->
+                formLogin
+                    .loginPage(LOGIN_URL)
+                    .authenticationManager(authenticationManager)
+                    .authenticationSuccessHandler(authenticationSuccessHandler)
+                    .authenticationFailureHandler(loginFailureHandler))
+        .logout(
+            logout ->
+                logout.logoutUrl(LOGOUT_URL).logoutSuccessHandler(customLogoutSuccessHandler));
 
     return http.build();
   }
